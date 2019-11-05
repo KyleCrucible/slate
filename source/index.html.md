@@ -2,238 +2,110 @@
 title: API Reference
 
 language_tabs: # must be one of https://git.io/vQNgJ
-  - shell
-  - ruby
-  - python
   - javascript
-
-toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
-  - <a href='https://github.com/lord/slate'>Documentation Powered by Slate</a>
-
-includes:
-  - errors
 
 search: true
 ---
 
 # Introduction
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+Hi Scott, Harry and Crucible Team. Here's some documentation about the service layer of the Enzo project.
 
-We have language bindings in Shell, Ruby, Python, and JavaScript! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
-
-This example API documentation page was created with [Slate](https://github.com/lord/slate). Feel free to edit it and use it as a base for your own API's documentation.
-
-# Authentication
-
-> To authorize, use this code:
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-```
-
-```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
-```
+Some of the snippet examples use an object similar to that of what you have outlined.
 
 ```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
+var garment = {
+  viewerID: ID,
+  garment: GARMENTS.SUIT_JACKET,
+	material: MATERIALS.TWEED_5,
+	elements: [
+		{
+			element: LAPEL,
+			variation: WIDE,
+		},
+  ],
+};
 ```
 
-> Make sure to replace `meowmeowmeow` with your API key.
+# Instantiating the Visualizer
 
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
+My understanding is that if the customizer retains settings from previous garments, then reinstantiating the viewer by selecting a new garment will preserve the previous state if the user returns to that garment.
 
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
+> To initialize, use this code:
 
-`Authorization: meowmeowmeow`
+```javascript
+const visualizer = new Visualizer();
 
-<aside class="notice">
+let emersyaID = visualizer.init(garment.viewerID);
+```
+
+> 'viewerID' feeds into the iframe URL. 
+
+
+<!-- <aside class="notice">
 You must replace <code>meowmeowmeow</code> with your personal API key.
-</aside>
+</aside> -->
 
-# Kittens
+# Customizer Functions
 
-## Get All Kittens
+changeGarment - e.g. jacket, trousers, etc.
+- changeGarmentView - e.g. jacket default, jacket open/lining, jacket zoom level, etc.
+- changeGarmentFabric
+- changeGarmentLining
+- onClick - to respond to hotspots
+- changeGarmentCustomization
 
-```ruby
-require 'kittn'
+## Change Garment
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
-
-```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
-```
+To be added. Will change the viewer.
 
 ```javascript
-const kittn = require('kittn');
 
-let api = kittn.authorize('meowmeowmeow');
-let kittens = api.kittens.get();
+let emersyaID = visualizer.init(garment.viewerID);
 ```
 
-> The above command returns JSON structured like this:
+> Presumably it will be a reinstantiation with a different ID. If garment state needs to at all be preserved by this service layer, let me know.
 
-```json
-[
-  {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
-  }
-]
-```
+## Change Garment View
 
-This endpoint retrieves all kittens.
-
-### HTTP Request
-
-`GET http://example.com/api/kittens`
-
-### Query Parameters
-
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
-
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
-
-## Get a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2"
-  -H "Authorization: meowmeowmeow"
-```
+Some garments will have actionable points that will affect the model. An example is a suit jacket being clicked to open and reveal the inner lining.
 
 ```javascript
-const kittn = require('kittn');
 
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.get(2);
+var garmentView = visualizer.changeGarmentView(garment.elements.element);
 ```
 
-> The above command returns JSON structured like this:
-
-```json
-{
-  "id": 2,
-  "name": "Max",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
-}
-```
-
-This endpoint retrieves a specific kitten.
-
-<aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
-
-### HTTP Request
-
-`GET http://example.com/kittens/<ID>`
-
-### URL Parameters
-
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to retrieve
-
-## Delete a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.delete(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.delete(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2"
-  -X DELETE
-  -H "Authorization: meowmeowmeow"
-```
+## Change Garment Fabric
 
 ```javascript
-const kittn = require('kittn');
 
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.delete(2);
+var garmentFabric = visualizer.changeGarmentFabric(garment.material);
 ```
 
-> The above command returns JSON structured like this:
 
-```json
-{
-  "id": 2,
-  "deleted" : ":("
-}
+## Change Garment Lining
+
+Will be added soon.
+
+```javascript
+
 ```
 
-This endpoint deletes a specific kitten.
+## Change Garment Customization
 
-### HTTP Request
+To change the garment's variant of the part of the garment. E.g. changing the width of the lapel.
 
-`DELETE http://example.com/kittens/<ID>`
+This will most likely occur after the user has clicked the garment and triggered garmentView to zoom in and also reveal the options in the customizer.
 
-### URL Parameters
+```javascript
 
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to delete
+var garmentCustomization = visualizer.changeGarmentCustomization(garment.elements.element, garment.elements.variation);
+```
+
+# Visualizer Functions
+
+The visualizer functions are all functions that affect the customizer. This can happen by clicking a highlighted part of the model. 
+
+
+
 
